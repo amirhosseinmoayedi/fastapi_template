@@ -1,0 +1,132 @@
+[tool.poetry]
+name = "fastapi-template"
+version = "0.1.0"
+description = ""
+authors = []
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.111.0"
+uvicorn = "^0.30.1"
+mypy = "^1.10.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+pre-commit = "^3.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+
+[tool.ruff]
+target-version = "py312"
+line-length = 99
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+# Same as Black.
+indent-width = 4
+
+[tool.ruff.lint]
+# Select which codes to check
+# E: Pyflakes (error codes)
+# F: PyFlakes (additional checks)
+# W: PEP8 (warning codes)
+# B: Bugbear (additional checks for potential issues)
+# A: flake8-builtins
+# SIM: flake8-simplify
+# DTZ: flake8-datetimez
+select = ["E", "F", "W", "B", "A", "SIM", "DTZ"]
+ignore = [
+    "W503",  # Line break before binary operator
+    "SIM105",
+    "SIM116",
+]
+exclude = [
+    "tests",       # Test files
+    "venv",        # Virtual environments
+    ".venv",       # Virtual environments
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Disallow unused variables when underscore-prefixed.
+dummy-variable-rgx = ""
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E401"]
+
+
+
+[tool.black]
+line-length = 99 # same as Ruff
+target-version = ['py312']
+skip-string-normalization = false
+skip-magic-trailing-comma = false
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | \venv
+)/
+'''
+
+[tool.mypy]
+python_versioas = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+exclude = []
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "1.0.0"
+version_files = [ "pyproject.toml:version"]
+
+[tool.commitizen.customize]
+schema_pattern  = "(?s)^(feat|fix|enhancement|ref|style|test|docs|build|ops|chore|revert|bumps)(\\(\\S+\\))?!?: [^\\n\\r]+((\\n\\n.*)|(\\s*))?$"
+
+[tool.bandit]
+targets = ["app/"]
+exclude = ["app/tests/"]
+profile = "medium"
+options = ["--recursive"]
+skips = [
+    "B201",
+    "B610",
+    "B611",
+    "B703"
+]
