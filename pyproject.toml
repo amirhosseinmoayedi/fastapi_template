@@ -11,9 +11,12 @@ fastapi = "^0.111.0"
 uvicorn = "^0.30.1"
 pytest = "^8.2.2"
 
-[tool.poetry.group.dev.dependencies]
 
+[tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.1"
+mypy = "^1.10.0"
+ruff = "^0.4.9"
+bandit = "^1.7.9"
 
 
 [build-system]
@@ -68,7 +71,6 @@ indent-width = 4
 # DTZ: flake8-datetimez
 select = ["E", "F", "W", "B", "A", "SIM", "DTZ"]
 ignore = [
-    "W503",  # Line break before binary operator
     "SIM105",
     "SIM116",
 ]
@@ -106,10 +108,10 @@ exclude = '''
 '''
 
 [tool.mypy]
-python_versioas = "3.12"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
-exclude = []
+exclude = ["app/tests"]
 
 [tool.commitizen]
 name = "cz_conventional_commits"

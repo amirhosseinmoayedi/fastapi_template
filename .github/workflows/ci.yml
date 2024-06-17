@@ -10,9 +10,38 @@ on:
 
 env:
   VERSION: ""
-  IMAGE_NAME: "my-fastapi-app"
+  IMAGE_NAME: ${{ vars.IMAGE_NAME }}
 
 jobs:
+
+  code-quality:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+            python-version: 3.12
+
+      - name: linter
+        run: |
+          pip install ruff
+          ruff check
+
+      - name: mypy
+        run: |
+          pip install mypy
+          mypy app/
+
+      - name: bandit
+        run: |
+          pip install bandit bandit[toml]
+          bandit -c=pyproject.toml app
+  
+
   set-version:
     runs-on: ubuntu-latest
     outputs:
@@ -36,6 +65,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    needs: [ code-quality ,set-version ]
+    env:
+      VERSION: ${{ needs.set-version.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -44,42 +76,22 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Build Docker image
-        run: docker build -t my-fastapi-app:$VERSION .
+        run: docker build -t $IMAGE_NAME:$VERSION .
 
-      - name: Save Docker image to file
-        run: docker save $IMAGE_NAME:$VERSION -o $IMAGE_NAME_$VERSION.tar
-
-      - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: dokcer-image-artifact
-          path: $IMAGE_NAME_*.tar
-
-  code-quality:
-    needs: [build]
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-    steps:
-        - name: Download Docker image artifact
-          uses: actions/download-artifact@v3
-          with:
-            name: $IMAGE_NAME
-            path: .
-
-        - name: Load Docker image from file
-          run: |
-                IMAGE_FILE=$(ls $IMAGE_NAME_*.tar)
-                docker load -i $IMAGE_FILE
-
-
-        - name: Code Quality Check
-          run: docker run --rm $IMAGE_NAME:$VERSION bash -c "pip install pre-commit && pre-commit run --all-files"
+      - name: Upload Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run:  |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker push $IMAGE_NAME:$VERSION
 
   test:
-    needs: [build]
+    needs: [ set-version, build ]
     timeout-minutes: 15
     runs-on: ubuntu-latest
-
+    env:
+      VERSION: ${{ needs.set-version.outputs.version }}
     services:
       postgres:
         image: postgres:16.3-alpine3.19
@@ -91,19 +103,10 @@ jobs:
           - 5432:5432
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Use Docker image from build stage
+      - name: Pull Docker image
         run: |
-          pip install toml
-          VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['tool']['poetry']['version'])")
-          docker pull my-fastapi-app:$VERSION 
+          echo $IMAGE_NAME:$VERSION
+          docker pull $IMAGE_NAME:$VERSION
 
       - name: Run tests
-        run: |
-          VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['tool']['poetry']['version'])")
-          docker run --rm my-fastapi-app:$VERSION pytest
+        run: docker run --rm $IMAGE_NAME:$VERSION poetry run pytest
