@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
-from app.main import APP
+from app.presentation.application import get_app
 
-client = TestClient(APP)
+client = TestClient(get_app())
 
 
 class TestApp:
@@ -9,4 +9,4 @@ class TestApp:
     def test_root(self):
         response = client.get("/")
         assert response.status_code == 200
-        assert response.json() == {"message": "Hello World"}
+        assert response.json() == {"message": "hello world"}
