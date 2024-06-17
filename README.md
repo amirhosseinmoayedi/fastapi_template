@@ -35,3 +35,8 @@ cz bump --check-consistency # Check if the version in your configuration file ma
 cz bump --increment minor #  Manually specify the version increment (patch, minor, major).
 git push && git push --tags #  Push the changes and the new tag to your repository.
 ```
+
+## App setting
+to set the env copy the .env.sample and create .env file.
+ant variable that start with `CUSTOM_` will be read to the project and can be used.
+note: if you want to change the prefix to read env to something else you can do it in `app/settings.py`
