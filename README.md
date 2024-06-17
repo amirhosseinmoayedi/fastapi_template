@@ -1,6 +1,7 @@
 # Template for Fastapi projects
 included
 - [ ] sample-app-with-structure
+- [ ] fix mypy in ci 
 
 
 ## start project
