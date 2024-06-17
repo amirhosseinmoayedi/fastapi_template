@@ -34,6 +34,7 @@ jobs:
 
       - name: Use Docker image from build stage
         run: |
+          pip install toml
           VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['tool']['poetry']['version'])")
           docker pull my-fastapi-app:$VERSION  # Pull the Docker image from your registry or local cache
 
