@@ -29,7 +29,7 @@ RUN python -m venv $POETRY_HOME \
 # Stage 2: Runtime
 FROM python:3.12.3-slim-bullseye AS runtime
 
-RUN apt-get update && sudo apt upgrade -y
+RUN apt-get update && apt upgrade -y
 
 # Set environment variables
 ENV POETRY_HOME="/opt/poetry"
