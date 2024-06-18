@@ -48,6 +48,10 @@ class Settings(BaseSettings):
     sentry_dsn: Optional[str] = None
     sentry_sample_rate: float = 1.0
 
+    # This variable is used to define
+    # multiproc_dir. It's required for [uvi|guni]corn projects.
+    prometheus_dir: Path = TEMP_DIR / "prom"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="CUSTOM_",

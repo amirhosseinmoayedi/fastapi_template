@@ -1,11 +1,32 @@
+import os
+import shutil
+
 import uvicorn
 
 from gunicorn_web_server import GunicornApplication
 from settings import settings
 
 
+def set_multiproc_dir() -> None:
+    """
+    Sets mutiproc_dir env variable.
+
+    This function cleans up the multiprocess directory
+    and recreates it. This actions are required by prometheus-client
+    to share metrics between processes.
+
+    After cleanup, it set variable.
+    """
+    shutil.rmtree(settings.prometheus_dir, ignore_errors=True)
+    os.makedirs(settings.prometheus_dir, exist_ok=True)
+    os.environ["PROMETHEUS_MULTIPROC_DIR"] = str(
+        settings.prometheus_dir.expanduser().absolute(),
+    )
+
+
 def main() -> None:
     """Entrypoint of the application."""
+    set_multiproc_dir()
     if settings.reload:
         uvicorn.run(
             "presentation.application:get_app",
