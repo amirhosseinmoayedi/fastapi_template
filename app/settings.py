@@ -9,7 +9,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 TEMP_DIR = Path(gettempdir())
 
 
-class LogLevel(str, enum.Enum):  # noqa: WPS600
+class LogLevel(str, enum.Enum):
     """log levels."""
 
     DEBUG = "DEBUG"
