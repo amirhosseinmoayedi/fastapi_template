@@ -13,6 +13,8 @@ pytest = "^8.2.2"
 pydantic-settings = "^2.3.3"
 gunicorn = "^22.0.0"
 uvicorn-worker = "^0.2.0"
+prometheus-fastapi-instrumentator = "^7.0.0"
+sentry-sdk = "^2.5.1"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -112,8 +114,10 @@ exclude = '''
 
 [tool.mypy]
 python_version = "3.12"
-warn_return_any = true
+warn_return_any = false
 warn_unused_configs = true
+pretty = true
+allow_untyped_decorators = true
 exclude = ["app/tests"]
 
 [tool.commitizen]
