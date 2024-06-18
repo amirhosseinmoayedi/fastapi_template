@@ -1,4 +1,5 @@
 import enum
+import tomllib
 from pathlib import Path
 from tempfile import gettempdir
 
@@ -48,6 +49,14 @@ class Settings(BaseSettings):
         env_prefix="CUSTOM_",
         env_file_encoding="utf-8",
     )
+
+    @property
+    def version(self) -> str:
+        with open("pyproject.toml", "rb") as f:
+            toml_data = tomllib.load(f)
+        # Attempt to get the version from different possible locations
+        version: str = toml_data.get("tool", {}).get("poetry", {}).get("version")
+        return version
 
 
 settings = Settings()
