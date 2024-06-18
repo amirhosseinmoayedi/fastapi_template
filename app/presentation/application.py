@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import UJSONResponse
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from app.settings import settings
 
@@ -16,6 +18,16 @@ def get_app() -> FastAPI:
     :return: application.
     """
     #
+    if settings.sentry_dsn:
+        sentry_sdk.init(
+            dsn=settings.sentry_dsn,
+            traces_sample_rate=settings.sentry_sample_rate,
+            environment=settings.environment,
+            integrations=[
+                FastApiIntegration(transaction_style="endpoint"),
+            ],
+        )
+
     app = FastAPI(
         title="fastapi template",
         version=settings.version,

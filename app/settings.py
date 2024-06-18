@@ -2,6 +2,7 @@ import enum
 import tomllib
 from pathlib import Path
 from tempfile import gettempdir
+from typing import Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -43,6 +44,9 @@ class Settings(BaseSettings):
     environment: str = Environments.DEV  # Current environment
 
     log_level: LogLevel = LogLevel.INFO
+
+    sentry_dsn: Optional[str] = None
+    sentry_sample_rate: float = 1.0
 
     model_config = SettingsConfigDict(
         env_file=".env",
