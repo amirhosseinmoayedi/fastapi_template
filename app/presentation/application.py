@@ -1,16 +1,14 @@
 from pathlib import Path
 
+import sentry_sdk
 from fastapi import FastAPI
 from fastapi.responses import UJSONResponse
 from fastapi.staticfiles import StaticFiles
-import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
-from app.settings import settings
-
 from app.presentation.apis.router import api_router
-from app.presentation.lifetime import register_startup_event, register_shutdown_event
-
+from app.presentation.lifespan import lifespan
+from app.settings import settings
 
 APP_ROOT = Path(__file__).parent.parent
 
@@ -41,10 +39,8 @@ def get_app() -> FastAPI:
         redoc_url=None,
         openapi_url="/api/openapi.json",
         default_response_class=UJSONResponse,
+        lifespan=lifespan,
     )
-
-    register_startup_event(app)
-    register_shutdown_event(app)
 
     app.include_router(router=api_router, prefix="/api")
 
