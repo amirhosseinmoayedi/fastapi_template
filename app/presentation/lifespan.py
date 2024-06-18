@@ -12,7 +12,7 @@ def setup_prometheus(app: FastAPI) -> None:
     """
     PrometheusFastApiInstrumentator(should_group_status_codes=False).instrument(
         app,
-    ).expose(app, should_gzip=True, name="prometheus_metrics")
+    ).expose(app, should_gzip=True, name="metrics")
 
 
 @asynccontextmanager
