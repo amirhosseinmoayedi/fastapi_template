@@ -2,7 +2,7 @@ import enum
 import tomllib
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Optional
+from typing import Optional, Set
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -44,6 +44,15 @@ class Settings(BaseSettings):
     environment: str = Environments.DEV  # Current environment
 
     log_level: LogLevel = LogLevel.INFO
+
+    allowed_hosts: Set[str]
+
+    gzip_min_size: int = 1000
+
+    allow_origins: Set[str] = {"*"}
+    allow_methods: Set[str] = {"*"}
+    allow_headers: Set[str] = {"*"}
+    allow_credentials: bool = False
 
     sentry_dsn: Optional[str] = None
     sentry_sample_rate: float = 1.0

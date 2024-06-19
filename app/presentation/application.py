@@ -8,6 +8,7 @@ from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from app.presentation.apis.router import api_router
 from app.presentation.lifespan import lifespan
+from app.presentation.middlewares import add_middlewares
 from app.settings import settings
 
 APP_ROOT = Path(__file__).parent.parent
@@ -41,6 +42,8 @@ def get_app() -> FastAPI:
         default_response_class=UJSONResponse,
         lifespan=lifespan,
     )
+
+    add_middlewares(app)
 
     app.include_router(router=api_router, prefix="/api")
 
