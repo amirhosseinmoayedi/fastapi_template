@@ -45,7 +45,7 @@ class Settings(BaseSettings):
 
     log_level: LogLevel = LogLevel.INFO
 
-    allowed_hosts: Set[str]
+    allowed_hosts: Set[str] = {"*"}
 
     gzip_min_size: int = 1000
 
