@@ -1,5 +1,3 @@
-import pkgutil
-from pathlib import Path
 from typing import AsyncGenerator
 
 import pytest
@@ -59,13 +57,7 @@ async def drop_database():
 
 def load_all_models() -> None:
     """Load all models from this folder."""
-    package_dir = Path(__file__).resolve().parent
-    modules = pkgutil.walk_packages(
-        path=[str(package_dir)],
-        prefix="app.repository.db.models.",
-    )
-    for module in modules:
-        __import__(module.name)
+    from app.repository.db.models import DummyModel  # noqa: F401
 
 
 @pytest.fixture(scope="session")
@@ -134,3 +126,13 @@ def client(dbsession: AsyncSession) -> TestClient:
     client = TestClient(app=application)
     application.dependency_overrides[get_db_session] = lambda: dbsession
     return client
+
+
+@pytest.fixture(scope="session")
+def anyio_backend() -> str:
+    """
+    Backend for anyio pytest plugin.
+
+    :return: backend name.
+    """
+    return "asyncio"
