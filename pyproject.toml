@@ -97,7 +97,7 @@ unfixable = []
 dummy-variable-rgx = ""
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["E401"]
+"__init__.py" = ["E401", "F401"]
 
 
 
