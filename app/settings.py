@@ -4,6 +4,7 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import Optional, Set
 
+from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 TEMP_DIR = Path(gettempdir())
@@ -24,7 +25,7 @@ class Environments(str, enum.Enum):
 
     DEV = "development"
     PRODUCTION = "production"
-    STAGING = "staging"
+    TESTING = "testing"
 
 
 class Settings(BaseSettings):
@@ -61,6 +62,11 @@ class Settings(BaseSettings):
     # multiproc_dir. It's required for [uvi|guni]corn projects.
     prometheus_dir: Path = TEMP_DIR / "prom"
 
+    postgres_db_dsn: PostgresDsn = PostgresDsn(
+        "postgresql+psycopg://postgres:postgres@localhost:5432/dummy"
+    )
+    test_db_name: str = "test_dummy"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="CUSTOM_",
@@ -74,6 +80,12 @@ class Settings(BaseSettings):
         # Attempt to get the version from different possible locations
         version: str = toml_data.get("tool", {}).get("poetry", {}).get("version")
         return version
+
+    @property
+    def test_db_url(self) -> str:
+        return str(self.postgres_db_dsn).replace(
+            settings.postgres_db_dsn.path, f"/{settings.test_db_name}"
+        )
 
 
 settings = Settings()
