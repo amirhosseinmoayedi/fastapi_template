@@ -1,3 +1,7 @@
+"""
+Main router for the API.
+"""
+
 from fastapi import APIRouter
 
 from app.presentation.apis import docs

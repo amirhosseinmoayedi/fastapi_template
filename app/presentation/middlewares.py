@@ -7,7 +7,14 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from app.settings import settings, Environments
 
 
-def add_middlewares(app: FastAPI) -> None:
+def add_middlewares(app: FastAPI):
+    """
+    Add middlewares to the FastAPI application.
+
+    :param app:
+    :return:
+    """
+
     if settings.environment is not Environments.DEV:
         app.add_middleware(HTTPSRedirectMiddleware)
 
