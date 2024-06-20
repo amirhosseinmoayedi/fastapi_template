@@ -85,7 +85,7 @@ ignore = [
     "SIM116",
 ]
 exclude = [
-    "tests",       # Test files
+    "app/tests/*",  # Test files
     "venv",        # Virtual environments
     ".venv",       # Virtual environments
 ]
