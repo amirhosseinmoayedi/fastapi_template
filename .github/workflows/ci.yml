@@ -24,17 +24,17 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-            python-version: 3.12
+          python-version: 3.12
 
       - name: linter
         run: |
           pip install ruff
           ruff check
 
-#      - name: mypy # todo: fix the error in ci for mypy
-#        run: |
-#          pip install mypy
-#          mypy app/
+      #      - name: mypy # todo: fix the error in ci for mypy
+      #        run: |
+      #          pip install mypy
+      #          mypy app/
 
       - name: bandit
         run: |
@@ -82,7 +82,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run:  |
+        run: |
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker push $IMAGE_NAME:$VERSION
 
@@ -92,13 +92,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: ${{ needs.set-version.outputs.version }}
+      POSTGRES_DB_DSN: 'postgresql+psycopg://postgres:postgres@postgres:5432/dummy'
     services:
       postgres:
         image: postgres:16.3-alpine3.19
         env:
-          POSTGRES_USER: POSTGRES_USER
-          POSTGRES_PASSWORD: POSTGRES_PASSWORD
-          POSTGRES_DB: POSTGRES_DB
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dummy
         ports:
           - 5432:5432
 
@@ -109,4 +110,6 @@ jobs:
           docker pull $IMAGE_NAME:$VERSION
 
       - name: Run tests
-        run: docker run --rm $IMAGE_NAME:$VERSION poetry run pytest
+        run: |
+          echo $POSTGRES_DB_DSN
+          docker run --rm $IMAGE_NAME:$VERSION poetry run pytest
