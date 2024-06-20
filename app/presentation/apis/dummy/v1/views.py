@@ -49,10 +49,11 @@ class DummyView:
         "/{dummy_id}",
         status_code=200,
     )
-    def update_dummy_model(self, dummy_object: DummyRequest) -> None:
+    def update_dummy_model(self, dummy_id: int, dummy_object: DummyRequest) -> None:
         """
         Updates a dummy object in the database.
 
+        :param dummy_id: id of the dummy object.
         :param dummy_object: updated dummy object.
         """
-        return self.service.update_dummy(dummy_object)
+        return self.service.update_dummy(dummy_id, dummy_object)
