@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -10,6 +12,8 @@ class DummyResponse(BaseModel):
 
     id: int
     name: str
+    created_at: datetime
+    updated_at: datetime
 
 
 class DummyRequest(BaseModel):
