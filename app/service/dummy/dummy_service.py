@@ -14,5 +14,5 @@ class DummyService:
     def create_dummy(self, dummy):
         pass
 
-    def update_dummy(self, dummy):
+    def update_dummy(self, identifier, dummy):
         pass

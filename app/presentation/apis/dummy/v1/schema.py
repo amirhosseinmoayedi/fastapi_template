@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel
 
 
@@ -17,5 +15,4 @@ class DummyResponse(BaseModel):
 class DummyRequest(BaseModel):
     """DTO for creating new dummy model."""
 
-    id: Optional[int] = None
     name: str
