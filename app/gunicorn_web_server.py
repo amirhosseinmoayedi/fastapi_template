@@ -10,6 +10,12 @@ from uvicorn_worker import UvicornWorker as BaseUvicornWorker
 
 
 class JSONLogger(Logger):
+    """
+    JSON logger for gunicorn.
+
+    This class is used to log access logs in JSON format.
+    """
+
     def access(self, resp: Response, req: Request, environ: Dict[str, Any], request_time: float):
         log_data = {
             "method": req.method,
