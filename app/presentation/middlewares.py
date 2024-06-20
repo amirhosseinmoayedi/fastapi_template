@@ -15,7 +15,7 @@ def add_middlewares(app: FastAPI):
     :return:
     """
 
-    if settings.environment is not Environments.DEV:
+    if settings.environment is Environments.PRODUCTION:
         app.add_middleware(HTTPSRedirectMiddleware)
 
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.allowed_hosts)
