@@ -93,6 +93,7 @@ jobs:
     env:
       VERSION: ${{ needs.set-version.outputs.version }}
       POSTGRES_DSN: 'postgresql+psycopg://postgres:postgres@postgres:5432/dummy'
+      POETRY_VERSION: 1.7.1
     services:
       postgres:
         image: postgres:16.3-alpine3.19
@@ -107,13 +108,21 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-
     steps:
-      - name: Pull Docker image
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
         run: |
-          echo $IMAGE_NAME:$VERSION
-          docker pull $IMAGE_NAME:$VERSION
+          pip install poetry==$POETRY_VERSION
+          poetry install --only main  --no-root --no-ansi --no-interaction
 
       - name: Run tests
-        run:
-          docker run --rm -e POSTGRES_DSN=$POSTGRES_DSN $IMAGE_NAME:$VERSION poetry run pytest
+        run: |
+          poetry run pytest --cov=app app/tests/    
+
