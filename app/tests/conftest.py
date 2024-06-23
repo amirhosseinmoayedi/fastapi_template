@@ -17,7 +17,7 @@ from app.settings import settings
 
 async def create_database():
     """Create a database."""
-    db_url = make_url(str(settings.postgres_db_dsn))
+    db_url = make_url(str(settings.test_db_url))
     engine = create_async_engine(db_url, isolation_level="AUTOCOMMIT")
     db_name = settings.test_db_name
     async with engine.connect() as conn:
@@ -41,7 +41,7 @@ async def create_database():
 
 async def drop_database():
     """Drop current database."""
-    db_url = make_url(str(settings.postgres_db_dsn))
+    db_url = make_url(str(settings.test_db_url))
     engine = create_async_engine(db_url, isolation_level="AUTOCOMMIT")
     db_name = settings.test_db_name
     async with engine.connect() as conn:

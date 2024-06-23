@@ -15,7 +15,7 @@ async def setup_db(app: FastAPI):
     :param app: fastAPI application.
     """
 
-    engine = create_async_engine(str(settings.postgres_db_dsn), echo=True)
+    engine = create_async_engine(str(settings.postgres_dsn), echo=True)
     session_factory = async_sessionmaker(
         engine,
         expire_on_commit=False,
