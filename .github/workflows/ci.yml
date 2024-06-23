@@ -100,6 +100,11 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: dummy
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
           - 5432:5432
 
@@ -110,6 +115,5 @@ jobs:
           docker pull $IMAGE_NAME:$VERSION
 
       - name: Run tests
-        run: |
-          echo $POSTGRES_DB_DSN
-          docker run --rm $IMAGE_NAME:$VERSION poetry run pytest
+        run:
+          docker run --rm -e POSTGRES_DB_DSN=$POSTGRES_DB_DSN $IMAGE_NAME:$VERSION poetry run pytest
