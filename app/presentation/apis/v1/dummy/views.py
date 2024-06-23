@@ -3,7 +3,7 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends
 from fastapi_utils.cbv import cbv
 
-from app.presentation.apis.dummy.v1.schema import DummyResponse, DummyRequest
+from app.presentation.apis.v1.dummy.schema import DummyResponse, DummyRequest
 from app.presentation.utils import CommonQueryParams
 from app.repository.db.models import DummyModel
 from app.service import DummyService
