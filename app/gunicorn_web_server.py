@@ -69,7 +69,7 @@ class GunicornApplication(BaseApplication):
         self.options = {
             "bind": f"{host}:{port}",
             "workers": workers,
-            "worker_class": "gunicorn_web_server.UvicornWorker",
+            "worker_class": "app.gunicorn_web_server.UvicornWorker",
             "logger_class": JSONLogger,
             **kwargs,
         }
