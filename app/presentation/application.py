@@ -45,7 +45,7 @@ def get_app() -> FastAPI:
 
     add_middlewares(app)
 
-    app.include_router(router=api_router, prefix="/api")
+    app.include_router(router=api_router, prefix="")
 
     app.mount("/static", StaticFiles(directory=APP_ROOT / "static"), name="static")
 
