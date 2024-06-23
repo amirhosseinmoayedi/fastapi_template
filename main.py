@@ -3,8 +3,8 @@ import shutil
 
 import uvicorn
 
-from gunicorn_web_server import GunicornApplication
-from settings import settings
+from app.gunicorn_web_server import GunicornApplication
+from app.settings import settings
 
 
 def set_multiproc_dir() -> None:
@@ -29,7 +29,7 @@ def main() -> None:
     set_multiproc_dir()
     if settings.reload:
         uvicorn.run(
-            "presentation.application:get_app",
+            "app.presentation.application:get_app",
             host=settings.host,
             port=settings.port,
             workers=settings.workers_count,
@@ -42,7 +42,7 @@ def main() -> None:
         # option is not used, because reload
         # feature doen't work with Uvicorn workers.
         GunicornApplication(
-            "presentation.application:get_app",
+            "app.presentation.application:get_app",
             host=settings.host,
             port=settings.port,
             workers=settings.workers_count,
