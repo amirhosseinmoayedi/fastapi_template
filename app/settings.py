@@ -42,9 +42,9 @@ class Settings(BaseSettings):
     workers_count: int = 1  # quantity of workers for uvicorn
     reload: bool = False  # Enable uvicorn reloading
 
-    environment: str = Environments.DEV  # Current environment
+    environment: str = Environments.PRODUCTION  # Current environment
 
-    log_level: LogLevel = LogLevel.INFO
+    log_level: LogLevel = LogLevel.WARNING
 
     allowed_hosts: Set[str] = {"*"}
 
@@ -62,9 +62,7 @@ class Settings(BaseSettings):
     # multiproc_dir. It's required for [uvi|guni]corn projects.
     prometheus_dir: Path = TEMP_DIR / "prom"
 
-    postgres_db_dsn: PostgresDsn = PostgresDsn(
-        "postgresql+psycopg://postgres:postgres@localhost:5432/dummy"
-    )
+    postgres_dsn: PostgresDsn
     test_db_name: str = "test_dummy"
 
     model_config = SettingsConfigDict(
@@ -83,8 +81,8 @@ class Settings(BaseSettings):
 
     @property
     def test_db_url(self) -> str:
-        return str(self.postgres_db_dsn).replace(
-            settings.postgres_db_dsn.path, f"/{settings.test_db_name}"
+        return str(self.postgres_dsn).replace(
+            settings.postgres_dsn.path, f"/{settings.test_db_name}"
         )
 
 
