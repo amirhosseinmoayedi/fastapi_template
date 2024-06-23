@@ -92,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: ${{ needs.set-version.outputs.version }}
-      POSTGRES_DB_DSN: 'postgresql+psycopg://postgres:postgres@postgres:5432/dummy'
+      POSTGRES_DSN: 'postgresql+psycopg://postgres:postgres@postgres:5432/dummy'
     services:
       postgres:
         image: postgres:16.3-alpine3.19
@@ -116,4 +116,4 @@ jobs:
 
       - name: Run tests
         run:
-          docker run --rm -e POSTGRES_DB_DSN=$POSTGRES_DB_DSN $IMAGE_NAME:$VERSION poetry run pytest
+          docker run --rm -e POSTGRES_DSN=$POSTGRES_DSN $IMAGE_NAME:$VERSION poetry run pytest
