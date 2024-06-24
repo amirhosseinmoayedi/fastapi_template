@@ -17,7 +17,7 @@ class LogLevel(str, enum.Enum):
     INFO = "INFO"
     WARNING = "WARNING"
     ERROR = "ERROR"
-    FATAL = "FATAL"
+    CRITICAL = "CRITICAL"
 
 
 class Environments(str, enum.Enum):
