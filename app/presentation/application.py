@@ -6,6 +6,7 @@ from fastapi.responses import UJSONResponse
 from fastapi.staticfiles import StaticFiles
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
+from app.logging import configure_logging
 from app.presentation.apis.router import api_router
 from app.presentation.lifespan import lifespan
 from app.presentation.middlewares import add_middlewares
@@ -22,7 +23,7 @@ def get_app() -> FastAPI:
 
     :return: application.
     """
-    #
+    configure_logging()
     if settings.sentry_dsn:
         sentry_sdk.init(
             dsn=settings.sentry_dsn,
