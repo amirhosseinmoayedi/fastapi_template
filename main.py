@@ -2,6 +2,7 @@ import os
 import shutil
 
 import uvicorn
+from loguru import logger
 
 from app.gunicorn_web_server import GunicornApplication
 from app.settings import settings
@@ -24,6 +25,7 @@ def set_multiproc_dir() -> None:
     )
 
 
+@logger.catch
 def main() -> None:
     """Entrypoint of the application."""
     set_multiproc_dir()
