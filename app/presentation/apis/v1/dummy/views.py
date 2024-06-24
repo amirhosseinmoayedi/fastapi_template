@@ -2,6 +2,7 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, Depends
 from fastapi_utils.cbv import cbv
+from loguru import logger
 
 from app.presentation.apis.v1.dummy.schema import DummyResponse, DummyRequest
 from app.presentation.utils import CommonQueryParams
@@ -16,6 +17,17 @@ class DummyView:
 
     def __init__(self, service: DummyService = Depends(DummyService)):  # noqa: B008
         self.service: DummyService = service
+
+    @router.get("/error", status_code=500)
+    async def get_dummy_error(self):
+        """
+        :raise value error.
+        """
+        try:
+            raise ValueError("Dummy error")
+        except ValueError as e:
+            logger.bind(type="DUMMY").error("Dummy error")
+            raise e
 
     @router.get("/", status_code=200, response_model=List[DummyResponse])
     async def get_dummies(
