@@ -19,7 +19,7 @@ services:
     depends_on:
       psql:
         condition: service_healthy
-    command: [ "/bin/sh", "-c", "poetry run python main.py" ]
+    command: [ "/bin/sh", "-c", "python main.py" ]
 
   psql:
     image: postgres:16.3-alpine3.19
