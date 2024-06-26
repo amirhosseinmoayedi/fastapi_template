@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Request
 from fastapi.openapi.docs import (
-    get_redoc_html,
     get_swagger_ui_html,
     get_swagger_ui_oauth2_redirect_html,
 )
@@ -35,19 +34,3 @@ async def swagger_ui_redirect() -> HTMLResponse:
     :return: redirect.
     """
     return get_swagger_ui_oauth2_redirect_html()
-
-
-@router.get("/redoc", include_in_schema=False)
-async def redoc_html(request: Request) -> HTMLResponse:
-    """
-    Redoc UI.
-
-    :param request: current request.
-    :return: rendered redoc UI.
-    """
-    title = request.app.title
-    return get_redoc_html(
-        openapi_url=request.app.openapi_url,
-        title=f"{title} - ReDoc",
-        redoc_js_url="/static/docs/redoc.standalone.js",
-    )
