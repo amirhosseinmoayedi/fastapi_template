@@ -1,6 +1,6 @@
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi_utils.cbv import cbv
 from loguru import logger
 
@@ -9,7 +9,7 @@ from app.presentation.utils import CommonQueryParams
 from app.repository.db.models import DummyModel
 from app.service import DummyService
 
-router = APIRouter()
+router = APIRouter(tags=["dummy"])
 
 
 @cbv(router)
@@ -18,16 +18,18 @@ class DummyView:
     def __init__(self, service: DummyService = Depends(DummyService)):  # noqa: B008
         self.service: DummyService = service
 
-    @router.get("/error", status_code=500)
+    @router.get("/error", response_description="server sample error", status_code=500)
     async def get_dummy_error(self):
         """
-        :raise value error.
+        for testing logging.
+
+        :raise value error and log it with logger, then raise http exception with status code 500.
         """
         try:
             raise ValueError("Dummy error")
         except ValueError as e:
             logger.bind(type="DUMMY").error("Dummy error")
-            raise e
+            raise HTTPException(status_code=500) from e
 
     @router.get("/", status_code=200, response_model=List[DummyResponse])
     async def get_dummies(
@@ -36,7 +38,9 @@ class DummyView:
         """
         Retrieve all dummy objects from the database.
 
-        :param commons_params:
+        :param q: search query.
+        :param skip: number of items to skip.
+        :param limit: number of items to return.
         :return: list of dummy objects from database.
         """
         return await self.service.get_all()
@@ -56,14 +60,11 @@ class DummyView:
         Retrieve a dummy object from the database.
 
         :param dummy_id: id of the dummy object.
-        :return: dummy object from database.
+        :return: dummy object from a database.
         """
         return await self.service.get(dummy_id)
 
-    @router.patch(
-        "/{dummy_id}",
-        status_code=200,
-    )
+    @router.patch("/{dummy_id}", status_code=200)
     async def update_dummy_model(self, dummy_id: int, dummy_object: DummyRequest) -> None:
         """
         Updates a dummy object in the database.
