@@ -74,7 +74,7 @@ def configure_logging() -> None:  # pragma: no cover
             sys.stderr,
             level=settings.log_level.value,
             colorize=True,  # Colorize the output
-            # backtrace=True,  # Include tracebacks in the output
+            backtrace=True,  # Include tracebacks in the output
         )
 
     logger.add("dummy_error.log", level="ERROR", filter=filter_dummy_logs)
