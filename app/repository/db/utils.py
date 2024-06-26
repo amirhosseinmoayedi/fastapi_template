@@ -22,3 +22,12 @@ async def setup_db(app: FastAPI):
     )
     app.state.db_engine = engine
     app.state.db_session_factory = session_factory
+
+
+async def close_db(app: FastAPI):
+    """
+    Closes the database connection.
+
+    :param app: fastAPI application.
+    """
+    await app.state.db_engine.dispose()
