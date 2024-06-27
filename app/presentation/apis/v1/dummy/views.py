@@ -3,6 +3,7 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi_utils.cbv import cbv
 from loguru import logger
+from starlette import status
 from starlette.requests import Request
 
 from app.presentation.apis.v1.dummy.schema import DummyResponse, DummyRequest
@@ -23,10 +24,12 @@ class DummyView:
     @router.get(
         "/error",
         response_description="server sample error",
-        status_code=500,
-        responses={429: {"description": TOO_MANY_REQUESTS_ERROR_MESSAGE}},
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        responses={
+            status.HTTP_429_TOO_MANY_REQUESTS: {"description": TOO_MANY_REQUESTS_ERROR_MESSAGE}
+        },
     )
-    @LIMITER.limit("2/minute", error_message=TOO_MANY_REQUESTS_ERROR_MESSAGE)
+    @LIMITER.limit("1/minute", error_message=TOO_MANY_REQUESTS_ERROR_MESSAGE)
     async def get_dummy_error(self, request: Request):
         """
         for testing logging.
@@ -37,9 +40,9 @@ class DummyView:
             raise ValueError("Dummy error")
         except ValueError as e:
             logger.bind(type="DUMMY").error("Dummy error")
-            raise HTTPException(status_code=500) from e
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
-    @router.get("/", status_code=200, response_model=List[DummyResponse])
+    @router.get("/", status_code=status.HTTP_200_OK, response_model=List[DummyResponse])
     async def get_dummies(
         self, commons_params: Annotated[CommonQueryParams, Depends(CommonQueryParams)]
     ) -> list[DummyModel]:
@@ -53,7 +56,7 @@ class DummyView:
         """
         return await self.service.get_all()
 
-    @router.post("/", status_code=201, response_model=DummyResponse)
+    @router.post("/", status_code=status.HTTP_201_CREATED, response_model=DummyResponse)
     async def create_dummy_model(self, dummy_object: DummyRequest) -> DummyModel:
         """
         Creates dummy model in the database.
@@ -62,7 +65,7 @@ class DummyView:
         """
         return await self.service.create(dummy_object.name)
 
-    @router.get("/{dummy_id}", status_code=200, response_model=DummyResponse)
+    @router.get("/{dummy_id}", status_code=status.HTTP_200_OK, response_model=DummyResponse)
     async def get_dummy_model(self, dummy_id: int) -> DummyModel:
         """
         Retrieve a dummy object from the database.
@@ -72,7 +75,7 @@ class DummyView:
         """
         return await self.service.get(dummy_id)
 
-    @router.patch("/{dummy_id}", status_code=200)
+    @router.patch("/{dummy_id}", status_code=status.HTTP_200_OK)
     async def update_dummy_model(self, dummy_id: int, dummy_object: DummyRequest) -> None:
         """
         Updates a dummy object in the database.
@@ -82,7 +85,7 @@ class DummyView:
         """
         await self.service.update(dummy_id, dummy_object.name)
 
-    @router.delete("/{dummy_id}", status_code=204)
+    @router.delete("/{dummy_id}", status_code=status.HTTP_204_NO_CONTENT)
     async def delete_dummy_model(self, dummy_id: int) -> None:
         """
         Deletes a dummy object from the database.
