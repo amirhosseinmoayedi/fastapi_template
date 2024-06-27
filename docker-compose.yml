@@ -19,6 +19,8 @@ services:
     depends_on:
       psql:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     command: [ "/bin/sh", "-c", "python main.py" ]
 
   psql:
