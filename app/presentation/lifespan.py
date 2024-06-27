@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from prometheus_fastapi_instrumentator.instrumentation import PrometheusFastApiInstrumentator
 
+from app.presentation.limiter import setup_limiter
 from app.repository.db.utils import setup_db, close_db
 
 
@@ -28,6 +29,7 @@ async def lifespan(app: FastAPI):
     print("started")
     app.middleware_stack = None
     setup_prometheus(app)
+    setup_limiter(app)
 
     await setup_db(app)
     app.middleware_stack = app.build_middleware_stack()
