@@ -1,21 +1,10 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from prometheus_fastapi_instrumentator.instrumentation import PrometheusFastApiInstrumentator
 
 from app.presentation.limiter import setup_limiter
+from app.presentation.utils import setup_prometheus
 from app.repository.db.utils import setup_db, close_db
-
-
-def setup_prometheus(app: FastAPI) -> None:
-    """
-    Enables prometheus integration.
-
-    :param app: current application.
-    """
-    PrometheusFastApiInstrumentator(should_group_status_codes=False).instrument(
-        app,
-    ).expose(app, should_gzip=True, name="metrics")
 
 
 @asynccontextmanager

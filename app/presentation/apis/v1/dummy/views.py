@@ -8,7 +8,7 @@ from starlette.requests import Request
 
 from app.presentation.apis.v1.dummy.schema import DummyResponse, DummyRequest
 from app.presentation.limiter import LIMITER, TOO_MANY_REQUESTS_ERROR_MESSAGE
-from app.presentation.utils import CommonQueryParams
+from app.presentation.dependecies import CommonQueryParams
 from app.repository.db.models import DummyModel
 from app.service import DummyService
 

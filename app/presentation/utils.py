@@ -1,18 +1,13 @@
-from typing import Union
+from fastapi import FastAPI
+from prometheus_fastapi_instrumentator.instrumentation import PrometheusFastApiInstrumentator
 
 
-class CommonQueryParams:
+def setup_prometheus(app: FastAPI) -> None:
     """
-    Common query parameters for all endpoints
+    Enables prometheus integration.
 
-    Attributes:
-    - q: str: search query
-    - skip: int: number of items to skip
-    - limit: int: number of items to return
-
+    :param app: current application.
     """
-
-    def __init__(self, q: Union[str, None] = None, skip: int = 0, limit: int = 100):
-        self.q = q
-        self.skip = skip
-        self.limit = limit
+    PrometheusFastApiInstrumentator(should_group_status_codes=False).instrument(
+        app,
+    ).expose(app, should_gzip=True, name="metrics")
