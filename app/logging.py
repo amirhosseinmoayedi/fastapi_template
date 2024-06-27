@@ -77,4 +77,5 @@ def configure_logging() -> None:  # pragma: no cover
             backtrace=True,  # Include tracebacks in the output
         )
 
+    # add other loggers to use in the project
     logger.add("dummy_error.log", level="ERROR", filter=filter_dummy_logs)

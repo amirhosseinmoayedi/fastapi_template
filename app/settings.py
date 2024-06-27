@@ -2,8 +2,7 @@ import enum
 import tomllib
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Optional, Set
-
+from typing import Set, Optional
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -63,10 +62,10 @@ class Settings(BaseSettings):
     prometheus_dir: Optional[Path] = TEMP_DIR / "prom"
 
     postgres_dsn: PostgresDsn
-    test_db_name: Optional[str] = "test_db"
+    test_db_name: str = "test_db"
 
-    enable_global_rate_limit: Optional[bool] = False
-    global_rate_limit_per_minute: Optional[int] = 1000
+    enable_global_rate_limit: bool = False
+    global_rate_limit_per_minute: int = 1000
     rate_limit_redis_url: Optional[str] = None
 
     model_config = SettingsConfigDict(
