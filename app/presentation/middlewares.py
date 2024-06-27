@@ -3,6 +3,7 @@ from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.settings import settings, Environments
 
@@ -12,11 +13,13 @@ def add_middlewares(app: FastAPI):
     Add middlewares to the FastAPI application.
 
     :param app:
-    :return:
     """
 
     if settings.environment is Environments.PRODUCTION:
         app.add_middleware(HTTPSRedirectMiddleware)
+
+    if settings.enable_global_rate_limit:
+        app.add_middleware(SlowAPIMiddleware)
 
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.allowed_hosts)
 
