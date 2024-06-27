@@ -2,9 +2,11 @@ from datetime import datetime
 
 import pytest
 from fastapi.testclient import TestClient
+from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
+from app.presentation.limiter import TOO_MANY_REQUESTS_ERROR_MESSAGE
 from app.tests.factories.dummy import DummyModelFactory
 
 
@@ -38,3 +40,11 @@ class TestDummyView:
         assert response.json()[0].get("name") is not None
         assert response.json()[0].get("created_at") is not None
         assert response.json()[0].get("updated_at") is not None
+
+    @pytest.mark.anyio
+    async def test_check_dummy_throttle(self, async_client: AsyncClient, dbsession: AsyncSession):
+        response = await async_client.get("/api/v1/dummy/error")
+        assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = await async_client.get("/api/v1/dummy/error")
+        assert response.status_code == status.HTTP_429_TOO_MANY_REQUESTS
+        assert response.json().get("detail") == TOO_MANY_REQUESTS_ERROR_MESSAGE
