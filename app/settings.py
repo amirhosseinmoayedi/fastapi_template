@@ -65,6 +65,10 @@ class Settings(BaseSettings):
     postgres_dsn: PostgresDsn
     test_db_name: str = "test_dummy"
 
+    enable_global_rate_limit: bool = False
+    global_rate_limit_per_minute: int = 1000
+    rate_limit_redis_url: Optional[str] = None
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="",
