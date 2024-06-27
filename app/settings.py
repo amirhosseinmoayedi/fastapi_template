@@ -36,37 +36,37 @@ class Settings(BaseSettings):
     with environment variables.
     """
 
-    host: str = "127.0.0.1"
-    port: int = 8000
+    host: Optional[str] = "127.0.0.1"
+    port: Optional[int] = 8000
 
-    workers_count: int = 1  # quantity of workers for uvicorn
-    reload: bool = False  # Enable uvicorn reloading
+    workers_count: Optional[int] = 1  # quantity of workers for uvicorn
+    reload: Optional[bool] = False  # Enable uvicorn reloading
 
-    environment: str = Environments.PRODUCTION  # Current environment
+    environment: Optional[str] = Environments.PRODUCTION  # Current environment
 
-    log_level: LogLevel = LogLevel.WARNING
+    log_level: Optional[LogLevel] = LogLevel.WARNING
 
-    allowed_hosts: Set[str] = {"*"}
+    allowed_hosts: Optional[Set[str]] = {"*"}
 
-    gzip_min_size: int = 1000
+    gzip_min_size: Optional[int] = 1000
 
-    allow_origins: Set[str] = {"*"}
-    allow_methods: Set[str] = {"*"}
-    allow_headers: Set[str] = {"*"}
-    allow_credentials: bool = False
+    allow_origins: Optional[Set[str]] = {"*"}
+    allow_methods: Optional[Set[str]] = {"*"}
+    allow_headers: Optional[Set[str]] = {"*"}
+    allow_credentials: Optional[bool] = False
 
     sentry_dsn: Optional[str] = None
-    sentry_sample_rate: float = 1.0
+    sentry_sample_rate: Optional[float] = 1.0
 
     # This variable is used to define
     # multiproc_dir. It's required for [uvi|guni]corn projects.
-    prometheus_dir: Path = TEMP_DIR / "prom"
+    prometheus_dir: Optional[Path] = TEMP_DIR / "prom"
 
     postgres_dsn: PostgresDsn
-    test_db_name: str = "test_dummy"
+    test_db_name: Optional[str] = "test_db"
 
-    enable_global_rate_limit: bool = False
-    global_rate_limit_per_minute: int = 1000
+    enable_global_rate_limit: Optional[bool] = False
+    global_rate_limit_per_minute: Optional[int] = 1000
     rate_limit_redis_url: Optional[str] = None
 
     model_config = SettingsConfigDict(
