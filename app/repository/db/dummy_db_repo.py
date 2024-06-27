@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from fastapi import Depends
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update, delete, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repository.db.dependencies import get_db_session
@@ -70,3 +70,12 @@ class DummyDBRepository:
         stmt = delete(DummyModel).where(DummyModel.id == identifier)
         await self.session.execute(stmt)
         await self.session.commit()
+
+    async def count(self) -> int:
+        """
+        count the number of dummy objects in the db
+
+        :return: number of dummy objects
+        """
+        count = await self.session.execute(select(func.count()).select_from(DummyModel))
+        return count.scalar()
