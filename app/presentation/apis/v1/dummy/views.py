@@ -3,8 +3,10 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi_utils.cbv import cbv
 from loguru import logger
+from starlette.requests import Request
 
 from app.presentation.apis.v1.dummy.schema import DummyResponse, DummyRequest
+from app.presentation.limiter import LIMITER, TOO_MANY_REQUESTS_ERROR_MESSAGE
 from app.presentation.utils import CommonQueryParams
 from app.repository.db.models import DummyModel
 from app.service import DummyService
@@ -18,8 +20,14 @@ class DummyView:
     def __init__(self, service: DummyService = Depends(DummyService)):  # noqa: B008
         self.service: DummyService = service
 
-    @router.get("/error", response_description="server sample error", status_code=500)
-    async def get_dummy_error(self):
+    @router.get(
+        "/error",
+        response_description="server sample error",
+        status_code=500,
+        responses={429: {"description": TOO_MANY_REQUESTS_ERROR_MESSAGE}},
+    )
+    @LIMITER.limit("2/minute", error_message=TOO_MANY_REQUESTS_ERROR_MESSAGE)
+    async def get_dummy_error(self, request: Request):
         """
         for testing logging.
 
