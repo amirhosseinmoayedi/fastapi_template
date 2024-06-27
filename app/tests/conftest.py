@@ -1,6 +1,7 @@
 from typing import AsyncGenerator
 
 import pytest
+from httpx import AsyncClient
 from sqlalchemy import make_url, text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -123,9 +124,17 @@ def client(dbsession: AsyncSession) -> TestClient:
     :yield: client for the app.
     """
     application = get_app()
-    client = TestClient(app=application)
     application.dependency_overrides[get_db_session] = lambda: dbsession
-    return client
+    return TestClient(app=application)
+
+
+@pytest.fixture
+async def async_client(dbsession: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
+    """ """
+    application = get_app()
+    application.dependency_overrides[get_db_session] = lambda: dbsession
+    async with AsyncClient(app=application, base_url="http://test") as client:
+        yield client
 
 
 @pytest.fixture(scope="session")
